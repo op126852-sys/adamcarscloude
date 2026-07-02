@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADAM CARS — Private Automotive Showroom</title>
+<meta name="description" content="ADAM CARS is a private collection of the world's most desirable performance and grand-touring vehicles — curated, certified, delivered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0D10;
+    --bg-elev:#14171C;
+    --bg-elev-2:#1B1F25;
+    --fg:#F3F1EC;
+    --fg-muted:#9BA1A8;
+    --accent:#D62828;
+    --accent-dim:#8C1B1B;
+    --ember:#FF8A3D;
+    --chrome:#C9CDD3;
+    --border:rgba(243,241,236,0.09);
+    --border-strong:rgba(243,241,236,0.16);
+    --font-display:'Big Shoulders Display', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    --container:1240px;
+    --radius:2px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+  ul{list-style:none;}
+  input,select,textarea{font:inherit;color:inherit;}
+
+  ::selection{background:var(--accent);color:var(--fg);}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  .container{max-width:var(--container);margin:0 auto;padding:0 clamp(20px,5vw,48px);}
+  .section{padding:clamp(72px,10vw,128px) 0;position:relative;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:'';width:24px;height:1px;background:var(--accent);}
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    line-height:0.95;
+  }
+  h2{font-size:clamp(2.2rem,4.5vw,3.6rem);}
+  h3{font-size:1.4rem;letter-spacing:0;}
+  p{color:var(--fg-muted);}
+  .lede{font-size:1.1rem;max-width:46ch;}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:16px 28px;
+    min-height:52px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    border-radius:var(--radius);
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    border:1px solid var(--accent);
+  }
+  .btn-primary:hover{box-shadow:0 0 0 1px var(--accent), 0 8px 30px -8px rgba(214,40,40,0.7);transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent;
+    color:var(--fg);
+    border:1px solid var(--border-strong);
+  }
+  .btn-ghost:hover{border-color:var(--fg);background:rgba(255,255,255,0.03);}
+
+  /* ---------- Background canvas ---------- */
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-2;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(214,40,40,0.10), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,138,61,0.06), transparent 60%),
+      var(--bg);
+  }
+  .grain{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Nav ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    padding:22px 0;
+    transition:padding .3s ease, background .3s ease, border-color .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    padding:14px 0;
+    background:rgba(11,13,16,0.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:900;font-size:1.35rem;letter-spacing:0.01em;text-transform:uppercase;}
+  .logo-mark{width:26px;height:26px;flex:none;}
+  .nav-links{display:flex;align-items:center;gap:34px;font-family:var(--font-mono);font-size:12.5px;letter-spacing:0.09em;text-transform:uppercase;}
+  .nav-links a{position:relative;color:var(--fg-muted);transition:color .2s ease;}
+  .nav-links a:hover{color:var(--fg);}
+  .nav-links a::after{content:'';position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--accent);transition:width .25s ease;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{display:flex;align-items:center;gap:20px;}
+  .nav-cta .btn{padding:12px 20px;min-height:44px;}
+  .nav-toggle{display:none;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--border-strong);border-radius:var(--radius);}
+  .nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
+    content:'';display:block;width:18px;height:1.5px;background:var(--fg);position:relative;transition:transform .25s ease, opacity .25s ease;
+  }
+  .nav-toggle span::before{position:absolute;top:-6px;}
+  .nav-toggle span::after{position:absolute;top:6px;}
+
+  /* ---------- Hero ---------- */
+  #hero{
+    padding:clamp(140px,20vw,190px) 0 80px;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:clamp(32px,5vw,64px);
+    align-items:center;
+  }
+  .hero-copy h1{font-size:clamp(2.6rem,6.4vw,4.7rem);}
+  .hero-copy h1 span{display:block;}
+  .hero-copy h1 .hl{color:var(--accent);}
+  .hero-copy p.lede{margin:26px 0 36px;}
+  .hero-ctas{display:flex;gap:16px;flex-wrap:wrap;}
+  .hero-stats{
+    display:flex;gap:clamp(20px,4vw,44px);
+    margin-top:56px;padding-top:32px;border-top:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .stat b{display:block;font-family:var(--font-display);font-size:1.9rem;font-weight:800;}
+  .stat span{font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);}
+
+  .car-stage{
+    position:relative;
+    aspect-ratio:1/0.95;
+    border:1px solid var(--border);
+    background:radial-gradient(ellipse 70% 60% at 50% 60%, rgba(255,255,255,0.04), transparent 70%), var(--bg-elev);
+  }
+  .car-stage::before{
+    content:'';position:absolute;inset:0;
+    background-image:linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:32px 32px;
+    opacity:.5;
+    pointer-events:none;
+  }
+  #car-canvas{width:100%;height:100%;touch-action:none;cursor:grab;}
+  #car-canvas:active{cursor:grabbing;}
+  .car-tag{
+    position:absolute;top:16px;left:16px;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--fg-muted);
+    display:flex;align-items:center;gap:8px;
+  }
+  .car-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
+  .drag-hint{
+    position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--fg-muted);
+    opacity:1;transition:opacity .5s ease;
+    pointer-events:none;
+  }
+  .drag-hint.hidden{opacity:0;}
+
+  .swatches{
+    position:absolute;bottom:16px;right:16px;display:flex;gap:8px;
+  }
+  .swatch{
+    width:26px;height:26px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.25);
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .swatch:hover{transform:scale(1.12);}
+  .swatch.active{border-color:var(--fg);}
+
+  /* ---------- Spec strip ---------- */
+  #spec-strip{
+    border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    padding:36px 0;
+  }
+  .spec-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;
+  }
+  .spec-row div b{display:block;font-family:var(--font-display);font-size:2rem;font-weight:800;}
+  .spec-row div span{font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);}
+
+  /* ---------- Collection ---------- */
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:48px;flex-wrap:wrap;}
+  .collection-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+  }
+  .car-card{
+    background:var(--bg-elev);
+    padding:32px 28px 28px;
+    display:flex;flex-direction:column;gap:18px;
+    position:relative;
+    overflow:hidden;
+    transition:background .3s ease;
+  }
+  .car-card:hover{background:var(--bg-elev-2);}
+  .car-card .cat{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);}
+  .blueprint{width:100%;height:96px;}
+  .blueprint path{fill:none;stroke:var(--chrome);stroke-width:1.6;opacity:.55;transition:opacity .3s ease, stroke .3s ease;}
+  .blueprint circle{fill:none;stroke:var(--chrome);stroke-width:1.6;opacity:.55;transition:opacity .3s ease, stroke .3s ease;}
+  .car-card:hover .blueprint path,.car-card:hover .blueprint circle{opacity:1;stroke:var(--accent);}
+  .car-card h3{margin-top:auto;}
+  .car-card .model-desc{font-size:.9rem;}
+  .car-specs{
+    display:flex;justify-content:space-between;
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;
+    padding-top:14px;border-top:1px solid var(--border);color:var(--fg-muted);
+  }
+  .car-specs b{color:var(--fg);font-weight:500;}
+  .price{font-family:var(--font-mono);font-size:13px;letter-spacing:0.06em;color:var(--fg);}
+  .card-cta{
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;
+    padding-top:6px;color:var(--fg);
+  }
+  .card-cta svg{width:14px;height:14px;transition:transform .2s ease;}
+  .car-card:hover .card-cta svg{transform:translateX(4px);}
+
+  /* ---------- Why us ---------- */
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+  .why-item{background:var(--bg);padding:40px 32px;}
+  .why-item svg{width:30px;height:30px;color:var(--accent);margin-bottom:20px;}
+  .why-item h3{margin-bottom:12px;font-size:1.2rem;}
+  .why-item p{font-size:.92rem;}
+
+  /* ---------- Testimonials ---------- */
+  #testimonials{background:var(--bg-elev);}
+  .testi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+  .testi{background:var(--bg-elev);padding:40px;display:flex;flex-direction:column;gap:24px;}
+  .testi blockquote{font-family:var(--font-display);font-weight:700;text-transform:none;font-size:1.35rem;line-height:1.3;letter-spacing:0;color:var(--fg);}
+  .testi .who{display:flex;align-items:center;gap:12px;}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--bg-elev-2);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--accent);flex:none;}
+  .who span{font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.05em;color:var(--fg-muted);}
+  .who strong{display:block;font-family:var(--font-body);font-weight:600;color:var(--fg);font-size:.92rem;}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:clamp(32px,5vw,80px);}
+  .contact-info .lede{margin:22px 0 32px;}
+  .info-line{display:flex;flex-direction:column;gap:4px;margin-bottom:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-muted);}
+  .info-line strong{font-family:var(--font-body);text-transform:none;letter-spacing:0;font-size:1rem;color:var(--fg);font-weight:600;}
+
+  form{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .field.full{grid-column:1/-1;}
+  label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);}
+  input,select,textarea{
+    background:var(--bg-elev);
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    min-height:48px;
+    color:var(--fg);
+    transition:border-color .2s ease, background .2s ease;
+  }
+  textarea{min-height:110px;resize:vertical;}
+  input::placeholder,textarea::placeholder{color:#5C6169;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;background:var(--bg-elev-2);}
+  select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239BA1A8' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
+  form .btn{grid-column:1/-1;justify-self:start;margin-top:6px;}
+  .form-note{grid-column:1/-1;font-size:.8rem;color:var(--fg-muted);}
+  .form-success{
+    display:none;
+    grid-column:1/-1;
+    border:1px solid var(--accent);
+    padding:22px 24px;
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.03em;
+    color:var(--fg);
+    background:rgba(214,40,40,0.06);
+  }
+  .form-success.show{display:block;}
+  form.submitted .field,form.submitted .btn,form.submitted .form-note{display:none;}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--border);padding:64px 0 32px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:56px;}
+  .footer-brand p{margin-top:16px;font-size:.88rem;max-width:32ch;}
+  .footer-col h4{font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:18px;}
+  .footer-col ul{display:flex;flex-direction:column;gap:12px;}
+  .footer-col a{font-size:.92rem;color:var(--fg-muted);transition:color .2s ease;}
+  .footer-col a:hover{color:var(--fg);}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:11px;letter-spacing:0.05em;color:var(--fg-muted);flex-wrap:wrap;gap:12px;}
+
+  /* ---------- Reveal on scroll ---------- */
+  [data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  [data-reveal].in-view{opacity:1;transform:translateY(0);}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .nav-links,.nav-cta .btn-ghost{display:none;}
+    .nav-toggle{display:flex;}
+    .hero-grid{grid-template-columns:1fr;}
+    .car-stage{order:-1;max-width:520px;margin:0 auto;}
+    .spec-row{grid-template-columns:repeat(2,1fr);row-gap:24px;}
+    .collection-grid{grid-template-columns:repeat(2,1fr);}
+    .why-grid{grid-template-columns:1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:620px){
+    .collection-grid{grid-template-columns:1fr;}
+    form{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+    .hero-stats{gap:24px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    [data-reveal]{opacity:1;transform:none;transition:none;}
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grain"></div>
+
+<header id="site-header">
+  <div class="container">
+    <nav>
+      <a href="#hero" class="logo">
+        <svg class="logo-mark" viewBox="0 0 26 26" fill="none"><path d="M13 2L24 22H2L13 2Z" stroke="#D62828" stroke-width="2" stroke-linejoin="round"/><path d="M13 10L18 20H8L13 10Z" fill="#D62828"/></svg>
+        Adam Cars
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#testimonials">Clients</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#contact" class="btn btn-ghost">Book a Viewing</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">Est. 2011 — Private Collection</div>
+        <h1>
+          <span>BUILT FOR</span>
+          <span>THE DRIVE</span>
+          <span class="hl">THAT MATTERS.</span>
+        </h1>
+        <p class="lede">A private showroom of the world's most desirable performance and grand-touring machines — hand-selected, fully certified, and delivered to your door.</p>
+        <div class="hero-ctas">
+          <a href="#collection" class="btn btn-primary">Explore The Collection</a>
+          <a href="#contact" class="btn btn-ghost">Book a Private Viewing</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>600+</b><span>Vehicles Curated</span></div>
+          <div class="stat"><b>4.9/5</b><span>Client Rating</span></div>
+          <div class="stat"><b>48H</b><span>White-Glove Delivery</span></div>
+        </div>
+      </div>
+
+      <div class="car-stage">
+        <span class="car-tag">Live — 3D Configurator</span>
+        <canvas id="car-canvas" aria-label="Interactive 3D preview of an Adam Cars vehicle. Drag to rotate."></canvas>
+        <span class="drag-hint" id="drag-hint">Drag to rotate</span>
+        <div class="swatches" id="swatches" role="group" aria-label="Paint colors"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPEC STRIP -->
+  <section id="spec-strip">
+    <div class="container">
+      <div class="spec-row">
+        <div><b>18</b><span>Years in Business</span></div>
+        <div><b>1,200+</b><span>Vehicles Delivered</span></div>
+        <div><b>200-PT</b><span>Certified Inspection</span></div>
+        <div><b>24/7</b><span>Concierge Line</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="collection" class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <div class="eyebrow">The Collection</div>
+          <h2>Six vehicles.<br>Zero compromises.</h2>
+        </div>
+        <p class="lede">Every car in the collection is verified for provenance, mechanically inspected, and prepared to concours standard before it reaches you.</p>
+      </div>
+
+      <div class="collection-grid" id="collection-grid" data-reveal></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE / WHY US -->
+  <section id="experience" class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <div class="eyebrow">The Experience</div>
+          <h2>Ownership, handled.</h2>
+        </div>
+      </div>
+      <div class="why-grid" data-reveal>
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3>Certified &amp; Inspected</h3>
+          <p>A 200-point inspection performed by master technicians before every delivery — full report included.</p>
+        </div>
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13l2-6h14l2 6"/><rect x="3" y="13" width="18" height="6" rx="1"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg>
+          <h3>White-Glove Delivery</h3>
+          <p>Detailed, fueled, and doorstep-ready — anywhere in the country, typically within 48 hours.</p>
+        </div>
+        <div class="why-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+          <h3>Lifetime Concierge</h3>
+          <p>One dedicated advisor for service, upgrades, and sourcing your next acquisition — for as long as you own the car.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <div class="eyebrow">Clients</div>
+          <h2>Trusted by collectors.</h2>
+        </div>
+      </div>
+      <div class="testi-grid" data-reveal>
+        <div class="testi">
+          <blockquote>"Adam Cars found the exact spec I'd been chasing for two years. The delivery experience alone was worth it."</blockquote>
+          <div class="who">
+            <div class="avatar">RH</div>
+            <div><strong>R. Halden</strong><span>Collector, since 2018</span></div>
+          </div>
+        </div>
+        <div class="testi">
+          <blockquote>"White-glove isn't marketing copy here — it's simply how they operate, every time."</blockquote>
+          <div class="who">
+            <div class="avatar">MO</div>
+            <div><strong>M. Osei</strong><span>Client, since 2019</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container contact-grid">
+      <div class="contact-info" data-reveal>
+        <div class="eyebrow">Private Viewing</div>
+        <h2>Request access.</h2>
+        <p class="lede">Tell us what you're looking for and a concierge advisor will reach out within one business day to arrange a private viewing or test drive.</p>
+        <div class="info-line"><strong>+1 (415) 555-0182</strong>Concierge Line</div>
+        <div class="info-line"><strong>viewings@adamcars.example</strong>Email</div>
+        <div class="info-line"><strong>By appointment only</strong>San Francisco &amp; Nationwide Delivery</div>
+      </div>
+
+      <form id="viewing-form" data-reveal novalidate>
+        <div class="field">
+          <label for="fname">Full Name</label>
+          <input id="fname" name="fname" type="text" placeholder="Jordan Reyes" required>
+        </div>
+        <div class="field">
+          <label for="femail">Email</label>
+          <input id="femail" name="femail" type="email" placeholder="you@email.com" required>
+        </div>
+        <div class="field">
+          <label for="fphone">Phone</label>
+          <input id="fphone" name="fphone" type="tel" placeholder="(555) 000-0000">
+        </div>
+        <div class="field">
+          <label for="fmodel">Preferred Model</label>
+          <select id="fmodel" name="fmodel">
+            <option>Adam Vantera GT</option>
+            <option>Adam Solstice Roadster</option>
+            <option>Adam Meridian S</option>
+            <option>Adam Voltique EV</option>
+            <option>Adam Ranger X</option>
+            <option>Adam Heritage 66</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="fmessage">Message</label>
+          <textarea id="fmessage" name="fmessage" placeholder="Preferred date, trade-in details, or anything else we should know."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Request a Private Viewing</button>
+        <p class="form-note">This is a front-end demo form — no data is sent anywhere. Happy to wire it to email or your Supabase project.</p>
+        <div class="form-success" id="form-success">Thank you — a concierge advisor will contact you within one business day.</div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="logo">
+          <svg class="logo-mark" viewBox="0 0 26 26" fill="none"><path d="M13 2L24 22H2L13 2Z" stroke="#D62828" stroke-width="2" stroke-linejoin="round"/><path d="M13 10L18 20H8L13 10Z" fill="#D62828"/></svg>
+          Adam Cars
+        </a>
+        <p>A private showroom of the world's most desirable performance and grand-touring machines.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Showroom</h4>
+        <ul>
+          <li><a href="#collection">Collection</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#testimonials">Clients</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#hero">About</a></li>
+          <li><a href="#contact">Careers</a></li>
+          <li><a href="#contact">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+14155550182">+1 (415) 555-0182</a></li>
+          <li><a href="mailto:viewings@adamcars.example">viewings@adamcars.example</a></li>
+          <li><a href="#contact">Book a Viewing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Adam Cars. All rights reserved.</span>
+      <span>San Francisco — By Appointment Only</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ================= NAV ================= */
+  var header = document.getElementById('site-header');
+  var navToggle = document.getElementById('nav-toggle');
+  var navLinks = document.getElementById('nav-links');
+  window.addEventListener('scroll', function(){
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  navToggle.addEventListener('click', function(){
+    var open = navLinks.style.display === 'flex';
+    navLinks.style.display = open ? '' : 'flex';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.position = 'absolute';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'rgba(11,13,16,0.97)';
+    navLinks.style.padding = '24px';
+    navLinks.style.gap = '20px';
+    navLinks.style.borderBottom = '1px solid var(--border)';
+    navToggle.setAttribute('aria-expanded', String(!open));
+  });
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      if (window.innerWidth <= 980){ navLinks.style.display = ''; navToggle.setAttribute('aria-expanded','false'); }
+    });
+  });
+
+  /* ================= SCROLL REVEAL ================= */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.15 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  /* ================= COLLECTION DATA ================= */
+  var CARS = [
+    { name:"Adam Vantera GT", cat:"Grand Tourer", desc:"A long-nosed GT built to erase continents.", zero:"3.2s", hp:"620", price:"$284,000+" },
+    { name:"Adam Solstice Roadster", cat:"Convertible", desc:"Open-top, front-engined, entirely analog.", zero:"3.8s", hp:"480", price:"$198,000+" },
+    { name:"Adam Meridian S", cat:"Executive Sedan", desc:"Quiet authority for the daily commute.", zero:"4.1s", hp:"450", price:"$142,000+" },
+    { name:"Adam Voltique EV", cat:"Electric Performance", desc:"Instant torque, near-silent delivery.", zero:"2.9s", hp:"750", price:"$226,000+" },
+    { name:"Adam Ranger X", cat:"Performance SUV", desc:"Track-capable, still built for the family.", zero:"4.4s", hp:"540", price:"$168,000+" },
+    { name:"Adam Heritage 66", cat:"Classic Restomod", desc:"A vintage silhouette, modern underpinnings.", zero:"5.2s", hp:"390", price:"$215,000+" }
+  ];
+  var BLUEPRINT = 'M20,92 C20,78 30,73 45,71 L70,71 C82,52 102,36 130,33 C150,31 166,33 179,41 C196,51 206,61 221,65 L255,69 C270,71 280,79 280,92';
+  var grid = document.getElementById('collection-grid');
+  CARS.forEach(function(car){
+    var card = document.createElement('article');
+    card.className = 'car-card';
+    card.innerHTML =
+      '<span class="cat">' + car.cat + '</span>' +
+      '<svg class="blueprint" viewBox="0 0 300 110" aria-hidden="true">' +
+        '<path d="' + BLUEPRINT + '"/>' +
+        '<circle cx="70" cy="92" r="17"/>' +
+        '<circle cx="225" cy="92" r="17"/>' +
+        '<line x1="20" y1="92" x2="280" y2="92"/>' +
+      '</svg>' +
+      '<h3>' + car.name + '</h3>' +
+      '<p class="model-desc">' + car.desc + '</p>' +
+      '<div class="car-specs"><span>0&ndash;60 <b>' + car.zero + '</b></span><span>Power <b>' + car.hp + ' hp</b></span></div>' +
+      '<div class="card-cta"><span class="price">' + car.price + '</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>';
+    grid.appendChild(card);
+  });
+
+  /* ================= CONTACT FORM ================= */
+  var form = document.getElementById('viewing-form');
+  var success = document.getElementById('form-success');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!form.checkValidity()){ form.reportValidity(); return; }
+    form.classList.add('submitted');
+    success.classList.add('show');
+  });
+
+  /* ================= LIVE BACKGROUND (light streaks) ================= */
+  var bgCanvas = document.getElementById('bg-canvas');
+  var bgCtx = bgCanvas.getContext('2d');
+  var streaks = [];
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resizeBg(){
+    bgCanvas.width = window.innerWidth * dpr;
+    bgCanvas.height = window.innerHeight * dpr;
+    bgCanvas.style.width = window.innerWidth + 'px';
+    bgCanvas.style.height = window.innerHeight + 'px';
+    bgCtx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resizeBg();
+  window.addEventListener('resize', resizeBg);
+
+  function makeStreak(){
+    var colors = ['214,40,40','255,138,61','243,241,236'];
+    return {
+      x: Math.random() * window.innerWidth * 1.4 - window.innerWidth * 0.2,
+      y: Math.random() * window.innerHeight,
+      len: 80 + Math.random() * 220,
+      speed: 0.4 + Math.random() * 1.1,
+      angle: 0.35 + Math.random() * 0.15,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      alpha: 0.05 + Math.random() * 0.16,
+      width: 1 + Math.random() * 2
+    };
+  }
+  var STREAK_COUNT = window.innerWidth < 700 ? 18 : 34;
+  for (var i=0;i<STREAK_COUNT;i++){ streaks.push(makeStreak()); }
+
+  var lastFrame = 0;
+  function drawBg(ts){
+    if (document.hidden) { requestAnimationFrame(drawBg); return; }
+    bgCtx.clearRect(0,0,window.innerWidth, window.innerHeight);
+    bgCtx.globalCompositeOperation = 'lighter';
+    streaks.forEach(function(s){
+      var dx = Math.cos(s.angle) * s.len;
+      var dy = Math.sin(s.angle) * s.len;
+      var grad = bgCtx.createLinearGradient(s.x, s.y, s.x - dx, s.y - dy);
+      grad.addColorStop(0, 'rgba(' + s.color + ',' + s.alpha + ')');
+      grad.addColorStop(1, 'rgba(' + s.color + ',0)');
+      bgCtx.strokeStyle = grad;
+      bgCtx.lineWidth = s.width;
+      bgCtx.beginPath();
+      bgCtx.moveTo(s.x, s.y);
+      bgCtx.lineTo(s.x - dx, s.y - dy);
+      bgCtx.stroke();
+
+      if (!reduceMotion){
+        s.x += Math.cos(s.angle) * s.speed;
+        s.y += Math.sin(s.angle) * s.speed;
+      }
+      if (s.x - dx > window.innerWidth + 40 || s.y - dy > window.innerHeight + 40){
+        var fresh = makeStreak();
+        fresh.x = -40; fresh.y = Math.random() * window.innerHeight * 0.6;
+        Object.assign(s, fresh, { x:-60, y: Math.random()*window.innerHeight });
+      }
+    });
+    bgCtx.globalCompositeOperation = 'source-over';
+    if (!reduceMotion) requestAnimationFrame(drawBg);
+  }
+  requestAnimationFrame(drawBg);
+
+  /* ================= 3D CAR ================= */
+  var stage = document.querySelector('.car-stage');
+  var canvas = document.getElementById('car-canvas');
+  var dragHint = document.getElementById('drag-hint');
+
+  var scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x0B0D10, 6, 14);
+
+  var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  camera.position.set(3.4, 1.7, 4.4);
+  camera.lookAt(0, 0.2, 0);
+
+  var renderer = new THREE.WebGLRenderer({ canvas:canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  function fitStage(){
+    var w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  fitStage();
+  window.addEventListener('resize', fitStage);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x404050, 0.7));
+  var key = new THREE.DirectionalLight(0xffffff, 0.9);
+  key.position.set(4, 6, 4);
+  scene.add(key);
+  var rim = new THREE.PointLight(0xD62828, 1.4, 12);
+  rim.position.set(-3, 1.5, -3);
+  scene.add(rim);
+  var fill = new THREE.PointLight(0x6b7cff, 0.35, 12);
+  fill.position.set(-2, 1, 3);
+  scene.add(fill);
+
+  // Floor spotlight texture
+  var floorCanvas = document.createElement('canvas');
+  floorCanvas.width = floorCanvas.height = 512;
+  var fctx = floorCanvas.getContext('2d');
+  var rg = fctx.createRadialGradient(256,256,10,256,256,256);
+  rg.addColorStop(0, 'rgba(255,255,255,0.22)');
+  rg.addColorStop(0.5, 'rgba(255,255,255,0.06)');
+  rg.addColorStop(1, 'rgba(255,255,255,0)');
+  fctx.fillStyle = rg;
+  fctx.fillRect(0,0,512,512);
+  var floorTex = new THREE.CanvasTexture(floorCanvas);
+  var floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.MeshBasicMaterial({ map:floorTex, transparent:true, depthWrite:false })
+  );
+  floor.rotation.x = -Math.PI/2;
+  floor.position.y = -0.62;
+  scene.add(floor);
+
+  // Materials
+  var bodyMat = new THREE.MeshStandardMaterial({ color:0xD62828, metalness:0.6, roughness:0.32 });
+  var glassMat = new THREE.MeshStandardMaterial({ color:0x0b0d10, metalness:0.9, roughness:0.15, transparent:true, opacity:0.88 });
+  var chromeMat = new THREE.MeshStandardMaterial({ color:0xC9CDD3, metalness:1, roughness:0.25 });
+  var tireMat = new THREE.MeshStandardMaterial({ color:0x0a0a0a, roughness:0.95 });
+  var headlightMat = new THREE.MeshStandardMaterial({ color:0xffffff, emissive:0xffffff, emissiveIntensity:1 });
+  var taillightMat = new THREE.MeshStandardMaterial({ color:0xD62828, emissive:0xD62828, emissiveIntensity:1 });
+
+  var car = new THREE.Group();
+
+  // Lower chassis
+  var chassis = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.34, 1.16), bodyMat);
+  chassis.position.y = -0.18;
+  car.add(chassis);
+
+  // Nose wedge
+  var nose = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.3, 1.02), bodyMat);
+  nose.position.set(1.35, -0.16, 0);
+  nose.rotation.z = -0.18;
+  car.add(nose);
+
+  // Tail
+  var tail = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.3, 1.02), bodyMat);
+  tail.position.set(-1.3, -0.1, 0);
+  tail.rotation.z = 0.12;
+  car.add(tail);
+
+  // Cabin
+  var cabin = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.4, 1.0), bodyMat);
+  cabin.position.set(-0.05, 0.16, 0);
+  car.add(cabin);
+  var windshield = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.32, 0.94), glassMat);
+  windshield.position.set(-0.05, 0.16, 0);
+  windshield.scale.set(0.97, 1, 0.9);
+  car.add(windshield);
+
+  // Chrome side strip
+  var strip = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.04, 1.19), chromeMat);
+  strip.position.y = -0.02;
+  car.add(strip);
+
+  // Spoiler
+  var spoilerBlade = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 1.0), bodyMat);
+  spoilerBlade.position.set(-1.55, 0.28, 0);
+  car.add(spoilerBlade);
+  [-0.4, 0.4].forEach(function(z){
+    var leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.16, 0.05), chromeMat);
+    leg.position.set(-1.55, 0.2, z);
+    car.add(leg);
+  });
+
+  // Lights
+  var hl1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.18), headlightMat);
+  hl1.position.set(1.68, -0.14, 0.42); car.add(hl1);
+  var hl2 = hl1.clone(); hl2.position.z = -0.42; car.add(hl2);
+  var tl1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.16), taillightMat);
+  tl1.position.set(-1.56, -0.06, 0.4); car.add(tl1);
+  var tl2 = tl1.clone(); tl2.position.z = -0.4; car.add(tl2);
+
+  // Wheels
+  function makeWheel(x, z){
+    var wheel = new THREE.Group();
+    var tire = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.26, 20), tireMat);
+    tire.rotation.z = Math.PI/2;
+    wheel.add(tire);
+    var rimMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.28, 12), chromeMat);
+    rimMesh.rotation.z = Math.PI/2;
+    wheel.add(rimMesh);
+    wheel.position.set(x, -0.46, z);
+    return wheel;
+  }
+  var wheelPositions = [[0.92,0.62],[0.92,-0.62],[-0.92,0.62],[-0.92,-0.62]];
+  var wheels = wheelPositions.map(function(p){ var w = makeWheel(p[0], p[1]); car.add(w); return w; });
+
+  car.position.y = 0.15;
+  scene.add(car);
+
+  // Paint swatches
+  var PAINTS = [
+    { name:'Racing Red', hex:0xD62828 },
+    { name:'Anthracite', hex:0x2B2E33 },
+    { name:'Glacier White', hex:0xE9ECEE },
+    { name:'British Racing Green', hex:0x123A2E },
+    { name:'Ember Copper', hex:0xB5541E }
+  ];
+  var swatchWrap = document.getElementById('swatches');
+  var targetColor = new THREE.Color(0xD62828);
+  var currentColor = new THREE.Color(0xD62828);
+  PAINTS.forEach(function(p, idx){
+    var b = document.createElement('button');
+    b.className = 'swatch' + (idx === 0 ? ' active' : '');
+    b.style.background = '#' + new THREE.Color(p.hex).getHexString();
+    b.setAttribute('aria-label', p.name);
+    b.addEventListener('click', function(){
+      targetColor.set(p.hex);
+      swatchWrap.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('active'); });
+      b.classList.add('active');
+    });
+    swatchWrap.appendChild(b);
+  });
+
+  // Drag rotate
+  var dragging = false, lastX = 0, rotY = 0.5, autoRotate = true;
+  canvas.addEventListener('pointerdown', function(e){
+    dragging = true; autoRotate = false; lastX = e.clientX;
+    dragHint.classList.add('hidden');
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function(e){
+    if (!dragging) return;
+    var dx = e.clientX - lastX;
+    lastX = e.clientX;
+    rotY += dx * 0.008;
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+    canvas.addEventListener(ev, function(){ dragging = false; });
+  });
+
+  var clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    var dt = clock.getDelta();
+    if (autoRotate && !reduceMotion) rotY += dt * 0.22;
+    car.rotation.y = rotY;
+    currentColor.lerp(targetColor, 0.06);
+    bodyMat.color.copy(currentColor);
+    rim.intensity = 1.2 + Math.sin(clock.elapsedTime * 1.4) * 0.2;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+})();
+</script>
+</body>
+</html>
